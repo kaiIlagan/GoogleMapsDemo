@@ -5,19 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
 import com.example.googlemapsdemo.misc.TypeAndStyle
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -55,15 +58,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
 
         val marquette = LatLng(46.55770982379835, -87.4095826676534)
-        map.addMarker(MarkerOptions().position(marquette).title("Marker in Marquette"))
-        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(marquette, 10f))
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.marquette))
+        val marquetteMarker = map.addMarker(MarkerOptions()
+            .position(marquette)
+            .title("Marker in Marquette")
+            .snippet("Home to Northern Michigan University")
+            .draggable(true)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)))
+        marquetteMarker.tag = "College Town"
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marquette, 10f))
+        map.setOnMarkerClickListener(this)
         map.uiSettings.apply {
             isZoomControlsEnabled = true
         }
         typeAndStyle.setMapStyle(map, this)
-        map.setMinZoomPreference(15f)
-        map.setMaxZoomPreference(17f)
+        /*
+        lifecycleScope.launch {
+            delay(4000L)
+        }
+        */
+
+
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        map.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
+        marker?.showInfoWindow()
+        return true
     }
 
 }
