@@ -1,5 +1,6 @@
 package com.example.googlemapsdemo
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,10 +21,13 @@ import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var map: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+
+    private val sydney = LatLng(-34.0, 151.0)
+    private val marquette = LatLng(46.55770982379835, -87.4095826676534)
 
     private val typeAndStyle by lazy { TypeAndStyle() }
     private val cameraAndViewport by lazy { CameraAndViewport() }
@@ -54,10 +58,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         map = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
         map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
 
-        val marquette = LatLng(46.55770982379835, -87.4095826676534)
         val marquetteMarker = map.addMarker(MarkerOptions()
             .position(marquette)
             .title("Marker in Marquette")
@@ -66,11 +68,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)))
         marquetteMarker.tag = "College Town"
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marquette, 10f))
-        map.setOnMarkerClickListener(this)
         map.uiSettings.apply {
             isZoomControlsEnabled = true
         }
         typeAndStyle.setMapStyle(map, this)
+
+        addPolyline()
         /*
         lifecycleScope.launch {
             delay(4000L)
@@ -80,10 +83,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     }
 
-    override fun onMarkerClick(marker: Marker): Boolean {
-        map.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
-        marker?.showInfoWindow()
-        return true
+    private fun addPolyline(){
+        val polyline = map.addPolyline(
+            PolylineOptions().apply {
+                add(sydney, marquette)
+                width(5f)
+                color(Color.GREEN)
+            }
+        )
     }
 
 }
