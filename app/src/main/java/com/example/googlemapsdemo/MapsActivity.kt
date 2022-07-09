@@ -1,5 +1,6 @@
 package com.example.googlemapsdemo
 
+import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 
@@ -20,6 +24,7 @@ import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.jar.Manifest
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
@@ -73,24 +78,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
         }
         typeAndStyle.setMapStyle(map, this)
 
-        addPolyline()
-        /*
-        lifecycleScope.launch {
-            delay(4000L)
-        }
-        */
-
-
     }
 
-    private fun addPolyline(){
-        val polyline = map.addPolyline(
-            PolylineOptions().apply {
-                add(sydney, marquette)
-                width(5f)
-                color(Color.GREEN)
-            }
+    private fun checkLocationPernmission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            map.isMyLocationEnabled = true
+            Toast.makeText(this, "Already enabled", Toast.LENGTH_SHORT).show()
+        } else {
+            requestedPermission()
+        }
+    }
+
+    private fun requestedPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            1
         )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if( requestCode != 1){
+            return
+        }
+        if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Granted!", Toast.LENGTH_SHORT).show()
+            map.isMyLocationEnabled = true
+        } else {
+            Toast.makeText(this, "We need your permission!", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }
