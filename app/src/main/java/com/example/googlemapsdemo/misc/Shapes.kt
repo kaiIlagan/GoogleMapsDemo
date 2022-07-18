@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.delay
 
 class Shapes {
+    /*
     suspend fun addPolyline(map: GoogleMap){
         val polyline = map.addPolyline(
             PolylineOptions().apply {
@@ -27,6 +28,8 @@ class Shapes {
         polyline.points = newList
     }
 
+    */
+
     fun addPolygon(map: GoogleMap){
         val polygon = map.addPolygon(
             PolygonOptions().apply {
@@ -35,6 +38,7 @@ class Shapes {
         )
     }
 
+    /*
     suspend fun addCircle(map: GoogleMap){
         val circle = map.addCircle(
             CircleOptions().apply {
@@ -44,5 +48,5 @@ class Shapes {
                 strokeColor(R.color.purple_500)
             }
         )
-    }
+    }*/
 }

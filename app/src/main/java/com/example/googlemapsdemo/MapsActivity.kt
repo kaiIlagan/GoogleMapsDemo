@@ -1,5 +1,6 @@
 package com.example.googlemapsdemo
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -80,8 +81,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkLocationPernmission(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
         ) {
             map.isMyLocationEnabled = true
@@ -94,16 +96,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback{
     private fun requestedPermission() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
             1
         )
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if( requestCode != 1){
             return
         }

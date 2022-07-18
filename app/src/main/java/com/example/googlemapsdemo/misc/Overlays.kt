@@ -1,5 +1,6 @@
 package com.example.googlemapsdemo.misc
 
+import com.example.googlemapsdemo.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 
@@ -15,7 +16,7 @@ class Overlays {
         return map.addGroundOverlay(
             GroundOverlayOptions().apply {
                 positionFromBounds(marquetteBounds)
-                image(BitmapDescriptorFactory.fromResource(R.drawable.android))
+                image(BitmapDescriptorFactory.fromResource(R.drawable.ic_android))
             }
         )
     }
@@ -24,7 +25,7 @@ class Overlays {
         val groundOverlay = map.addGroundOverlay(
             GroundOverlayOptions().apply {
                 positionFromBounds(marquetteBounds)
-                image(BitmapDescriptorFactory.fromResource(R.drawable.android))
+                image(BitmapDescriptorFactory.fromResource(R.drawable.ic_android))
             }
         )
         groundOverlay.tag = "My Tag"
